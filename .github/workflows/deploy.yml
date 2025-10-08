@@ -1,0 +1,32 @@
+name: Deploy Static Website to GitHub Pages
+
+on:
+  push:
+    branches: [main]  # Runs every time you push to main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # No build step since it's just HTML, CSS, JS
+      - name: Upload site files
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./  # 👈 folder where your index.html and css files are located
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
